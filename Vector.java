@@ -12,16 +12,16 @@ public class Vector{
 
   //Constructors
 
-  //Default constructor, a 0 vector
+  //Default constructor, a 0 Vector in 3 dimensions
   public Vector(){
-    coordinates = new double[0];
-    magnitude = 0;
+    coordinates = new double[3];
+    setMagnitude();
     setDimension();
   }
 
-  //Creates a vector with a series of double inputs
+  //Creates an n-dimensional Vector with a series of double inputs
   public Vector(double... a){
-    if(a.length == 1)
+    if(a.length <= 1)
       throw new IllegalArgumentException("A vector must have at least two dimensions.");
     coordinates = new double[a.length];
     for(int i = 0; i < a.length; i++)
@@ -30,17 +30,10 @@ public class Vector{
     setDimension();
   }
 
-  //Creates a vector with an input of a double[]
- /* public Vector(double[] input){
-    if(input.length <= 1)
-      throw new IllegalArgumentException("A vector must have at least two dimensions.");
-    coordinates = new double[input.length];
-    for(int i = 0; i < input.length; i++){
-      coordinates[i] = input[i];
-    }
-    setMagnitude();
-    setDimension();
-  }*/
+  //Given a Vector and a desired magnitude n, creates a Vector in the same direction with magnitude n
+  public Vector(Vector input, double n){
+    this(input.normalize().scale(n));
+  }
 
   //Given a Vector as an input, creates a copy of that Vector
   public Vector(Vector input){
@@ -52,8 +45,8 @@ public class Vector{
   //Private methods
 
  /**
-  *Calculates the magnitude of the current vector
-  *@return The magnitude of the vector as a double
+  *Calculates the magnitude of the current Vector
+  *@return The magnitude of the Vector as a double
   */
   private double calculateMagnitude(){
     double sum = 0;
@@ -63,14 +56,14 @@ public class Vector{
   }
 
  /**
-  *Sets the magnitude of the current vector object
+  *Sets the magnitude of the current Vector object
   */
   private void setMagnitude(){
     magnitude = calculateMagnitude();
   }
 
  /**
-  *Sets the dimension of the vector by the number of its coordinates
+  *Sets the dimension of the Vector by the number of its coordinates
   */
   private void setDimension(){
     dimension = coordinates.length;
@@ -81,8 +74,8 @@ public class Vector{
   //Calculator methods, operations with other vectors
 
  /**
-  *Returns the dot product of this vector and another vector
-  *@param other Another vector object which must be of the same dimension
+  *Returns the dot product of this Vector and another Vector
+  *@param other Another Vector object which must be of the same dimension
   *@return a double representing the dot product
   */
   public double dotProduct(Vector other){
@@ -96,11 +89,11 @@ public class Vector{
   }
 
  /**
-  *Returns the cross product of this vector and another vector
+  *Returns the cross product of this Vector and another Vector
   *Note that cross products only exist in the 3rd and 7th dimension
   *This method only implements the 3rd dimensional cross product
-  *@param other The other vector we are crossing
-  *@return a vector that is the cross product of this and toher
+  *@param other The other Vector we are crossing
+  *@return a Vector that is the cross product of this and toher
   */
   public Vector crossProduct(Vector other){
     if(this.dimension != other.dimension)
@@ -115,8 +108,8 @@ public class Vector{
   }
 
  /**
-  *Returns a normalized version of this vector
-  *@return a Vector with magnitude 1 but still in the same direction
+  *Returns a normalized version of this Vector
+  *@return a Vector with magnitude 1 in the same direction
   */
   public Vector normalize(){
     double[] newCoordinates = new double[coordinates.length];
@@ -127,7 +120,7 @@ public class Vector{
   }
 
  /**
-  *Returns this vector scaled by n
+  *Returns this Vector scaled by n
   *@return a Vector with coordinates multiplied by n
   */
   public Vector scale(double n){
@@ -139,9 +132,9 @@ public class Vector{
   }
 
  /**
-  *Returns the angle between this vector and another vector in radians
-  *@param other The other vector
-  *@return the angle between this vector and the other vector using the dot product formula in radians
+  *Returns the angle between this Vector and another Vector in radians
+  *@param other The other Vector
+  *@return the angle between this Vector and the other Vector using the dot product formula in radians
   */
   public double angle(Vector other){
     double dotProduct = dotProduct(other);
@@ -150,36 +143,36 @@ public class Vector{
   }
 
   /**
-   *Returns the angle between this vector and another vector in degrees
-   *@param other The other vector
-   *@return the angle between this vector and the other vector using the dot product formula in degrees
+   *Returns the angle between this Vector and another Vector in degrees
+   *@param other The other Vector
+   *@return the angle between this Vector and the other Vector using the dot product formula in degrees
    */
   public double angleDegrees(Vector other){
     return Math.toDegrees(angle(other));
   }
 
  /**
-  *Checks if this vector is parallel to another vector
-  *@param other The other vector
-  *@return true if the angle is 0, false if not (within a millionth of a radian)
+  *Checks if this Vector is parallel to another Vector
+  *@param other The other Vector
+  *@return true if the difference between product of magnitudes and dot product is 0, false if not (within a millionth of a radian)
   */
   public boolean isParallel(Vector other){
-    return angle(other) <= 0.000001;
+    return Math.abs(dotProduct(other) - (this.magnitude * other.magnitude)) <= 0.000001;
   }
 
  /**
-  *Checks if this vector is perpendicular to another vecotr
-  *@param other The other vector
-  *@return true if the dot product is 1, false if not (within a millionth)
+  *Checks if this vector is perpendicular to another Vector
+  *@param other The other Vector
+  *@return true if the dot product is 0, false if not (within a millionth)
   */
   public boolean isPerpendicular(Vector other){
-    return dotProduct(other) - 1 <= 0.000001;
+    return Math.abs(dotProduct(other))  <= 0.000001;
   }
 
   //Getter methods
 
  /**
-  *Gives the magnitude of the current vector
+  *Gives the magnitude of the current Vector
   *@return instance variable magnitude
   */
   public double getMagnitude(){
@@ -187,8 +180,8 @@ public class Vector{
   }
 
  /**
-  *Returns a copy of this vector's coordinates
-  *@return a double[] copy of this vector's coordinates variable
+  *Returns a copy of this Vector's coordinates
+  *@return a double[] copy of this Vector's coordinates variable
   */
   public double[] getCoordinates(){
     double[] output = new double[coordinates.length];
@@ -199,7 +192,7 @@ public class Vector{
   }
 
  /**
-  *Returns the dimension of the vector
+  *Returns the dimension of the Vector
   *@return dimension
   */
   public int getDimension(){
