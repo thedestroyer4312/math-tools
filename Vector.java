@@ -2,6 +2,7 @@
  *A basic implementation of the mathematical vector
  *Supports scaling, normalization, angles, dot products, cross products (3 dimensions only), and parallel/perpendicular checking
  *Immutable class
+ *@author Trevor Tsai
  */
 public class Vector{
 
@@ -74,6 +75,37 @@ public class Vector{
   //Calculator methods, operations with other vectors
 
  /**
+  *Returns a Vector that is the sum of this Vector and another Vector
+  *@param other The other vector
+  *@return a new Vector that is the sum of these two vectors
+  */
+  public Vector add(Vector other){
+    if(this.dimension != other.dimension)
+      throw new IllegalArgumentException("The vectors must be of the same dimension.");
+    double[] newCoords = new double[this.coordinates.length];
+    for(int i = 0; i < this.coordinates.length; i++){
+      newCoords[i] = this.coordinates[i] + other.coordinates[i];
+    }
+    return new Vector(newCoords);
+  }
+ 
+ /**
+  *Returns a Vector that is the difference between this Vector and another Vector
+  *Note that a - b in vectors is equivalent to a + (-b)
+  *@param other The other Vector
+  *@return a new Vector that is the difference of these two vectors (the sum of this vector and the negative of the other Vector)
+  */
+  public Vector subtract(Vector other){
+    if(this.dimension != other.dimension)
+      throw new IllegalArgumentException("The vectors must be of the same dimension.");
+    double[] newCoords = new double[this.coordinates.length];
+    for(int i = 0; i < this.coordinates.length; i++){
+      newCoords[i] = this.coordinates[i] - other.coordinates[i];
+    }
+    return new Vector(newCoords);
+  }
+
+ /**
   *Returns the dot product of this Vector and another Vector
   *@param other Another Vector object which must be of the same dimension
   *@return a double representing the dot product
@@ -105,6 +137,29 @@ public class Vector{
     double b = -1 * this.coordinates[0] * other.coordinates[2] - this.coordinates[2] * other.coordinates[0];
     double c = this.coordinates[0] * other.coordinates[1] - this.coordinates[1] * other.coordinates[0];
     return new Vector(a, b, c);
+  }
+
+ /**
+  *Returns the projection of this Vector onto the Vector u
+  *@param u The other Vector onto which we are projecting this Vector
+  *@return a new Vector that is the projection of this Vector onto u
+  */
+  public Vector projection(Vector u){
+    if(this.dimension != u.dimension)
+      throw new IllegalArgumentException("The vectors must be of the same dimension.");
+    double dotProduct = dotProduct(u);
+    Vector output = new Vector(u.normalize());
+    return output.scale(dotProduct / u.magnitude);
+  }
+
+ /**
+  *Returns the component of this Vector onto the Vector u
+  *Note that the component would be the magnitude of the projection of this Vector onto u
+  *@param u The other Vector
+  *@return a double that represents the component, the magnitude of the projection
+  */
+  public double component(Vector u){
+    return projection(u).magnitude;
   }
 
  /**
